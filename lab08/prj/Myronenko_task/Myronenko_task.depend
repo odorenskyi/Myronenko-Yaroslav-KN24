@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1742295395 source:c:\univer\bmtp\myronenko-yaroslav-kn24\lab08\prj\myronenko_task\main.cpp
+	<iostream>
+	<windows.h>
+	<iomanip>
+	<limits>
+	"ModulesMyronenko.h"
+
+1742294442 c:\univer\bmtp\myronenko-yaroslav-kn24\lab08\prj\modulesmyronenko.h
+

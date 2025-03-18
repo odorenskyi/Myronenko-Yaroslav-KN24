@@ -1,7 +1,7 @@
 #ifndef MODULESMYRONENKO_H_INCLUDED
 #define MODULESMYRONENKO_H_INCLUDED
 
-double s_calculation (double x, double y, double z); //Оголошення функції знаходження змінної S
-void Dev_inf (); //Оголошення функції виведення інформації про розробника
+double s_calculation (double x, double y, double z); //РћРіРѕР»РѕС€РµРЅРЅСЏ С„СѓРЅРєС†С–С— Р·РЅР°С…РѕРґР¶РµРЅРЅСЏ Р·РјС–РЅРЅРѕС— S
+void Dev_inf (); //РћРіРѕР»РѕС€РµРЅРЅСЏ С„СѓРЅРєС†С–С— РІРёРІРµРґРµРЅРЅСЏ С–РЅС„РѕСЂРјР°С†С–С— РїСЂРѕ СЂРѕР·СЂРѕР±РЅРёРєР°
 
 #endif // MODULESMYRONENKO_H_INCLUDED

@@ -47,4 +47,18 @@ string fujita_scale (double speed) {
     return "Такої швидкості вітру не існує"; // Повернення повідомлення про невалідне число
 }
 
+void аverage_daily_temp (double temp[6]) {
+    // Обчислення середньодобової температури
+    double total_temp = 0;
+    for (int counter = 0; counter < 6; counter++) { // Перебір значень з масиву
+        total_temp += temp[counter]; // Додавання всіх значень температури
+    }
+    double average_celsius = total_temp / 6; // Знаходження середньодобової температури
 
+    // Конвертація в градуси Фаренгейта
+    double average_fahrenheit = (average_celsius * 9.0 / 5.0) + 32.0;
+
+    cout << "\nСередньодобова температура:" << endl;
+    cout << "В градусах Цельсія: " << average_celsius << " °C" << endl;
+    cout << "В градусах Фаренгейта: " << average_fahrenheit << " °F" << endl;
+}

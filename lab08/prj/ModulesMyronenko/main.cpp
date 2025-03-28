@@ -47,7 +47,7 @@ string fujita_scale (double speed) {
     return "Такої швидкості вітру не існує"; // Повернення повідомлення про невалідне число
 }
 
-void аverage_daily_temp (double temp[6]) {
+void average_daily_temp (double temp[6]) {
     // Обчислення середньодобової температури
     double total_temp = 0;
     for (int counter = 0; counter < 6; counter++) { // Перебір значень з масиву
@@ -61,4 +61,16 @@ void аverage_daily_temp (double temp[6]) {
     cout << "\nСередньодобова температура:" << endl;
     cout << "В градусах Цельсія: " << average_celsius << " °C" << endl;
     cout << "В градусах Фаренгейта: " << average_fahrenheit << " °F" << endl;
+}
+
+int count_bits (unsigned short N) {
+    bool bit = N & 1; // Перевіряємо значення молодшого біта (1 або 0)
+    int count = 0;
+
+    while (N) { // Поки число не стане нулем
+        count += ((N & 1) == bit); // Підраховуємо біти, які відповідають молодшом
+        N >>= 1; // Зсуваємо число праворуч на 1 біт
+    }
+
+    return count;
 }

@@ -1,6 +1,9 @@
 #include <iostream>
-#include <cmath>
-#include <string>
+#include <fstream>      // Для роботи з файлами
+#include <ctime>        // Для отримання дати та часу
+#include <cctype>       // Для перевірки isalpha()
+#include <string>       // Робота з рядками
+#include <sstream>      // Форматування тексту
 
 #define PI 3.141592653589793238  //Число Pi яке задається на етапі препроцесингу
 
@@ -92,3 +95,50 @@ int count_bits (unsigned short N) {
 
     return count;
 }
+
+
+static int countConsonants(const string& word) {
+    string letters = "аеєиіїоуюяАЕЄИІЇОУЮЯ";
+    int count = 0;
+    for (char ch : word) {
+        if (isalpha(ch) && letters.find(ch) == string::npos) {
+            count++;
+        }
+    }
+    return count;
+}
+
+static bool isWordInPoem(const string& word) {
+    string poem =
+        "Про себе не кажи недобрих слів, "
+        "Бо має сказане таємну силу. "
+        "Кажи: «Я сильний, впевнений, щасливий!» "
+        "І буде саме так, як ти хотів!";
+    return poem.find(word) != string::npos;
+}
+
+// ===== ЗАДАЧА 10.1 =====
+void task_10_1(const string& inputFile, const string& outputFile) {
+    ifstream in(inputFile);
+    ofstream out(outputFile, std::ios::app);
+
+    string word;
+    in >> word;
+
+    // Авторська інформація
+    out << "Розробник: Мироненко Ярослав\n";
+    out << "Університет: ЦНТУ \n";
+    out << "Місто: Кропривницький, Країна: Україна, Рік: 2025\n";
+
+    // Підрахунок приголосних
+    int consonants = countConsonants(word);
+    out << "Кількість приголосних: " << consonants << "\n";
+
+    // Чи є слово в поезії
+    if (isWordInPoem(word)) {
+        out << "Слово \"" << word << "\" є у вірші Іващенка.\n";
+    } else {
+        out << "Слово \"" << word << "\" відсутнє у вірші Іващенка.\n";
+    }
+}
+

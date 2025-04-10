@@ -96,34 +96,47 @@ int count_bits (unsigned short N) {
     return count;
 }
 
-
+// ===== Внутрішня функція: підрахунок приголосних =====
 static int countConsonants(const string& word) {
     string letters = "аеєиіїоуюяАЕЄИІЇОУЮЯ";
     int count = 0;
-    for (char ch : word) {
-        if (isalpha(ch) && letters.find(ch) == string::npos) {
-            count++;
+    for (char ch : word) { // перевіряє, чи це літера
+        if (isalpha(ch) && letters.find(ch) == string::npos) { // перевіряє, що літера не голосна (тобто приголосна)
+            count++; // Збільшуємо лічильник приголосних
         }
     }
     return count;
 }
 
+// ===== Внутрішня функція: перевірка, чи є слово у вірші =====
 static bool isWordInPoem(const string& word) {
-    string poem =
+    string poem = // Текст вірша з завдання
         "Про себе не кажи недобрих слів, "
         "Бо має сказане таємну силу. "
         "Кажи: «Я сильний, впевнений, щасливий!» "
         "І буде саме так, як ти хотів!";
+        // Повертає true, якщо слово входить до рядка (відмінність чутлива до регістру!)
     return poem.find(word) != string::npos;
+}
+
+// ===== Внутрішня функція: перетворення числа на двійковий рядок =====
+static string toBinary(int number) {
+    if (number == 0) return "0"; // Обробка нуля
+    string result;
+    while (number > 0) {
+        result = char('0' + (number % 2)) + result; // Додаємо залишок від ділення на 2 на початок рядка
+        number /= 2;
+    }
+    return result;
 }
 
 // ===== ЗАДАЧА 10.1 =====
 void task_10_1(const string& inputFile, const string& outputFile) {
-    ifstream in(inputFile);
-    ofstream out(outputFile, std::ios::app);
+    ifstream in(inputFile);                  // Відкриваємо файл для читання
+    ofstream out(outputFile, ios::app);  // Відкриваємо файл для дописування (append)
 
     string word;
-    in >> word;
+    in >> word; // Зчитуємо одне слово з файлу
 
     // Авторська інформація
     out << "Розробник: Мироненко Ярослав\n";
@@ -156,10 +169,26 @@ void task_10_2(const string& inputFile, const string& outputFile) {
     }
 
     // Дата і час
-    time_t now = std::time(nullptr);
+    time_t now = time(nullptr);
     char buf[64];
     strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(&now));
     out << "Дата і час запису: " << buf << "\n";
+}
+
+// ===== ЗАДАЧА 10.3 =====
+void task_10_3(double x, double y, double z, int b, const string& outputFile) {
+    ofstream out(outputFile, ios::app);
+
+    double result = s_calculation(x, y, z);
+
+    if (isnan(result)) {
+        out << "Помилка: ділення на нуль у функції s_calculation(" << x << ", " << y << ", " << z << ")\n";
+    } else {
+        out << "Результат s_calculation(" << x << ", " << y << ", " << z << ") = " << result << "\n";
+    }
+
+    string binary = toBinary(b); // Перетворюємо число b в двійкову систему
+    out << "Число " << b << " у двійковій формі: " << binary << "\n";
 }
 
 

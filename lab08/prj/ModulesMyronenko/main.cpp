@@ -142,3 +142,24 @@ void task_10_1(const string& inputFile, const string& outputFile) {
     }
 }
 
+// ===== ЗАДАЧА 10.2 =====
+void task_10_2(const string& inputFile, const string& outputFile) {
+    ifstream in(inputFile);
+    ofstream out(outputFile, ios::app);
+
+    string word;
+    in >> word;
+
+    if (!word.empty()) {
+        out << "Перша літера: " << word.front() << "\n";
+        out << "Остання літера: " << word.back() << "\n";
+    }
+
+    // Дата і час
+    time_t now = std::time(nullptr);
+    char buf[64];
+    strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(&now));
+    out << "Дата і час запису: " << buf << "\n";
+}
+
+

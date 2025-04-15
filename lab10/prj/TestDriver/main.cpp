@@ -74,7 +74,7 @@ int main() {
     wcout << L"Оберіть номер функції для запуску: ";
     wcin >> choice;
     // Виправлено цей рядок
-    wcin.ignore(std::numeric_limits<std::streamsize>::max(), L'\n')
+    wcin.ignore(std::numeric_limits<std::streamsize>::max(), L'\n');
 
     if (choice == 1) {
         wstring word;
@@ -122,9 +122,7 @@ int main() {
 
     else if (choice == 4) {
             break; // Вихід з програми
-    }else {
-        wcout << L"Невірний вибір. Спробуйте ще раз.\n";
-    }
+    }else   wcout << L"Невірний вибір. Спробуйте ще раз.\n";
 }
     return 0;
 }

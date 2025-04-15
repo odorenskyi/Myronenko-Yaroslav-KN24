@@ -61,19 +61,20 @@ int main() {
 
     // Файлові шляхи
     const string input_file = "input.txt";
-    const string output_file1 = "output_task1.txt";
-    const string output_file2 = "output_task2.txt";
-    const string output_file3 = "output_task3.txt";
+    const string output_file = "output_results.txt";
 
     int choice = 0;
+
+    while (true) {
     wcout << L"=== Тестовий драйвер лабораторної №10 ===\n";
     wcout << L"1 - Завдання 10.1 (аналіз слова)\n";
     wcout << L"2 - Завдання 10.2 (перша та остання буква, дата/час)\n";
     wcout << L"3 - Завдання 10.3 (обчислення виразу та переведення числа)\n";
+    wcout << L"4 - Вихід з програми\n";
     wcout << L"Оберіть номер функції для запуску: ";
     wcin >> choice;
     // Виправлено цей рядок
-    wcin.ignore(std::numeric_limits<std::streamsize>::max(), L'\n');
+    wcin.ignore(std::numeric_limits<std::streamsize>::max(), L'\n')
 
     if (choice == 1) {
         wstring word;
@@ -86,8 +87,8 @@ int main() {
             return 1;
         }
 
-        task_10_1(input_file, output_file1);
-        wcout << L"Результат записано у файл: output_task1.txt\n";
+        task_10_1(input_file, output_file);
+        wcout << L"Результат записано у файл: output_file.txt\n";
 
     } else if (choice == 2) {
         wstring word;
@@ -100,8 +101,8 @@ int main() {
             return 1;
         }
 
-        task_10_2(input_file, output_file2);
-        wcout << L"Результат записано у файл: output_task2.txt\n";
+        task_10_2(input_file, output_file);
+        wcout << L"Результат записано у файл: output_file.txt\n";
 
     } else if (choice == 3) {
         double x, y, z;
@@ -115,12 +116,15 @@ int main() {
         wcout << L"Введіть ціле число b для переведення в двійкову систему: ";
         wcin >> b;
 
-        task_10_3(x, y, z, b, input_file, output_file3);
-        wcout << L"Результат записано у файл: output_task3.txt\n";
-
-    } else {
-        wcout << L"Невірний вибір. Спробуйте ще раз.\n";
+        task_10_3(x, y, z, b, input_file, output_file);
+        wcout << L"Результат записано у файл: output_file.txt\n";
     }
 
+    else if (choice == 4) {
+            break; // Вихід з програми
+    }else {
+        wcout << L"Невірний вибір. Спробуйте ще раз.\n";
+    }
+}
     return 0;
 }

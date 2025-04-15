@@ -106,22 +106,15 @@ int count_bits (unsigned short N) {
 
 // Lab_10
 // Функція для збереження UTF-8 тексту у файл з BOM (Byte Order Mark)
-bool WriteUtf8File(const string& filename, const string& text) {
-    // Додаємо UTF-8 BOM
-    vector<unsigned char> buffer = {0xEF, 0xBB, 0xBF};
-
-    // Додаємо текст
-    for (char c : text) {
-        buffer.push_back(static_cast<unsigned char>(c));
-    }
-
-    // Записуємо у файл
+bool WriteUtf8File(const string& filename, const string& text, bool append = false) {
+    // Створюємо або відкриваємо файл
+    DWORD createMode = append ? OPEN_ALWAYS : CREATE_ALWAYS;
     HANDLE hFile = CreateFileA(
         filename.c_str(),
         GENERIC_WRITE,
         0,
         NULL,
-        CREATE_ALWAYS,
+        createMode,
         FILE_ATTRIBUTE_NORMAL,
         NULL
     );
@@ -130,17 +123,27 @@ bool WriteUtf8File(const string& filename, const string& text) {
         return false;
     }
 
+    // Якщо режим дозапису, переходимо в кінець файлу
+    if (append) {
+        SetFilePointer(hFile, 0, NULL, FILE_END);
+    } else {
+        // Якщо створюємо новий файл, додаємо BOM
+        DWORD bytesWritten;
+        unsigned char bom[] = {0xEF, 0xBB, 0xBF};
+        WriteFile(hFile, bom, 3, &bytesWritten, NULL);
+    }
+
     DWORD bytesWritten;
     bool success = WriteFile(
         hFile,
-        buffer.data(),
-        buffer.size(),
+        text.c_str(),
+        text.size(),
         &bytesWritten,
         NULL
     );
 
     CloseHandle(hFile);
-    return success && (bytesWritten == buffer.size());
+    return success && (bytesWritten == text.size());
 }
 
 // Функція для читання UTF-8 тексту з файлу
@@ -251,7 +254,8 @@ void task_10_1(const string& inputFile, const string& outputFile) {
     wstring wordWide = Utf8ToWide(utf8Input);
 
     // Підготовка результату
-    string result = "Розробник: Мироненко Ярослав\n";
+    string result = "========== ЗАВДАННЯ 10.1 ==========\n";
+    result += "Розробник: Мироненко Ярослав\n";
     result += "Університет: ЦНТУ \n";
     result += "Місто: Кропривницький, Країна: Україна, Рік: 2025\n";
 
@@ -274,7 +278,7 @@ void task_10_1(const string& inputFile, const string& outputFile) {
     }
 
     // Записуємо результат
-    WriteUtf8File(outputFile, result);
+    WriteUtf8File(outputFile, result, false);
 }
 
 // ===== ЗАДАЧА 10.2 =====
@@ -284,7 +288,7 @@ void task_10_2(const string& inputFile, const string& outputFile) {
     wstring wordWide = Utf8ToWide(utf8Input);
 
     // Підготовка результату
-    string result = "";
+    string result = "\n\n========== ЗАВДАННЯ 10.2 ==========\n";
 
     if (!wordWide.empty()) {
         wchar_t first = wordWide.front();
@@ -306,7 +310,7 @@ void task_10_2(const string& inputFile, const string& outputFile) {
     result += "Дата і час запису: " + string(buf) + "\n";
 
     // Записуємо результат
-    WriteUtf8File(outputFile, result);
+    WriteUtf8File(outputFile, result, true);
 }
 
 // ===== ЗАДАЧА 10.3 =====
@@ -335,7 +339,7 @@ void task_10_3(double x, double y, double z, int b, const string& inputFile, con
     outputContent += "Число " + to_string(b) + " у двійковій формі: " + binary + "\n";
 
     // Записуємо результат
-    WriteUtf8File(outputFile, outputContent);
+    WriteUtf8File(outputFile, outputContent, true);
 }
 
 // Для сумісності зі старим кодом

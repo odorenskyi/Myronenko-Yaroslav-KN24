@@ -2,8 +2,16 @@
 #include <fstream>      // Для роботи з файлами
 #include <ctime>        // Для отримання дати та часу
 #include <cctype>       // Для перевірки isalpha()
+#include <cwctype>
 #include <string>       // Робота з рядками
 #include <sstream>      // Форматування тексту
+#include <cmath>
+#include <limits>
+#include <windows.h>
+#include <algorithm>
+#include <codecvt>
+#include <locale>
+#include <vector>
 
 #define PI 3.141592653589793238  //Число Pi яке задається на етапі препроцесингу
 
@@ -96,35 +104,141 @@ int count_bits (unsigned short N) {
     return count;
 }
 
-// ===== Внутрішня функція: підрахунок приголосних =====
-static int countConsonants(const string& word) {
-    string letters = "аеєиіїоуюяАЕЄИІЇОУЮЯ";
+// Lab_10
+// Функція для збереження UTF-8 тексту у файл з BOM (Byte Order Mark)
+bool WriteUtf8File(const string& filename, const string& text) {
+    // Додаємо UTF-8 BOM
+    vector<unsigned char> buffer = {0xEF, 0xBB, 0xBF};
+
+    // Додаємо текст
+    for (char c : text) {
+        buffer.push_back(static_cast<unsigned char>(c));
+    }
+
+    // Записуємо у файл
+    HANDLE hFile = CreateFileA(
+        filename.c_str(),
+        GENERIC_WRITE,
+        0,
+        NULL,
+        CREATE_ALWAYS,
+        FILE_ATTRIBUTE_NORMAL,
+        NULL
+    );
+
+    if (hFile == INVALID_HANDLE_VALUE) {
+        return false;
+    }
+
+    DWORD bytesWritten;
+    bool success = WriteFile(
+        hFile,
+        buffer.data(),
+        buffer.size(),
+        &bytesWritten,
+        NULL
+    );
+
+    CloseHandle(hFile);
+    return success && (bytesWritten == buffer.size());
+}
+
+// Функція для читання UTF-8 тексту з файлу
+string ReadUtf8File(const string& filename) {
+    HANDLE hFile = CreateFileA(
+        filename.c_str(),
+        GENERIC_READ,
+        FILE_SHARE_READ,
+        NULL,
+        OPEN_EXISTING,
+        FILE_ATTRIBUTE_NORMAL,
+        NULL
+    );
+
+    if (hFile == INVALID_HANDLE_VALUE) {
+        return "";
+    }
+
+    DWORD fileSize = GetFileSize(hFile, NULL);
+    if (fileSize == INVALID_FILE_SIZE) {
+        CloseHandle(hFile);
+        return "";
+    }
+
+    vector<char> buffer(fileSize);
+    DWORD bytesRead;
+    bool success = ReadFile(
+        hFile,
+        buffer.data(),
+        fileSize,
+        &bytesRead,
+        NULL
+    );
+
+    CloseHandle(hFile);
+
+    if (!success || bytesRead == 0) {
+        return "";
+    }
+
+    // Пропускаємо BOM, якщо він є
+    size_t start = 0;
+    if (fileSize >= 3 &&
+        static_cast<unsigned char>(buffer[0]) == 0xEF &&
+        static_cast<unsigned char>(buffer[1]) == 0xBB &&
+        static_cast<unsigned char>(buffer[2]) == 0xBF) {
+        start = 3;
+    }
+
+    return string(buffer.begin() + start, buffer.end());
+}
+
+// Функція для конвертації UTF-8 у широкі символи
+wstring Utf8ToWide(const string& utf8) {
+    if (utf8.empty()) {
+        return L"";
+    }
+
+    int size_needed = MultiByteToWideChar(CP_UTF8, 0, utf8.c_str(), -1, NULL, 0);
+    vector<wchar_t> wideStr(size_needed);
+    MultiByteToWideChar(CP_UTF8, 0, utf8.c_str(), -1, wideStr.data(), size_needed);
+
+    return wstring(wideStr.begin(), wideStr.end() - 1); // Видаляємо нульовий символ
+}
+
+// Функція для конвертації широких символів в UTF-8
+string WideToUtf8(const wstring& wide) {
+    if (wide.empty()) {
+        return "";
+    }
+
+    int size_needed = WideCharToMultiByte(CP_UTF8, 0, wide.c_str(), -1, NULL, 0, NULL, NULL);
+    vector<char> utf8Str(size_needed);
+    WideCharToMultiByte(CP_UTF8, 0, wide.c_str(), -1, utf8Str.data(), size_needed, NULL, NULL);
+
+    return string(utf8Str.begin(), utf8Str.end() - 1); // Видаляємо нульовий символ
+}
+
+// ===== Підрахунок приголосних =====
+int countConsonants(const wstring& word) {
+    const wstring ukrVowels = L"аеєиіїоуюяАЕЄИІЇОУЮЯ";
     int count = 0;
-    for (char ch : word) { // перевіряє, чи це літера
-        if (isalpha(ch) && letters.find(ch) == string::npos) { // перевіряє, що літера не голосна (тобто приголосна)
-            count++; // Збільшуємо лічильник приголосних
+
+    for (wchar_t ch : word) {
+        if (iswalpha(ch) && ukrVowels.find(ch) == wstring::npos) {
+            count++;
         }
     }
+
     return count;
 }
 
-// ===== Внутрішня функція: перевірка, чи є слово у вірші =====
-static bool isWordInPoem(const string& word) {
-    string poem = // Текст вірша з завдання
-        "Про себе не кажи недобрих слів, "
-        "Бо має сказане таємну силу. "
-        "Кажи: «Я сильний, впевнений, щасливий!» "
-        "І буде саме так, як ти хотів!";
-        // Повертає true, якщо слово входить до рядка (відмінність чутлива до регістру!)
-    return poem.find(word) != string::npos;
-}
-
-// ===== Внутрішня функція: перетворення числа на двійковий рядок =====
-static string toBinary(int number) {
-    if (number == 0) return "0"; // Обробка нуля
+// ===== Перетворення числа на двійковий рядок =====
+string toBinary(int number) {
+    if (number == 0) return "0";
     string result;
     while (number > 0) {
-        result = char('0' + (number % 2)) + result; // Додаємо залишок від ділення на 2 на початок рядка
+        result = char('0' + (number % 2)) + result;
         number /= 2;
     }
     return result;
@@ -132,63 +246,99 @@ static string toBinary(int number) {
 
 // ===== ЗАДАЧА 10.1 =====
 void task_10_1(const string& inputFile, const string& outputFile) {
-    ifstream in(inputFile);                  // Відкриваємо файл для читання
-    ofstream out(outputFile, ios::app);  // Відкриваємо файл для дописування (append)
+    // Читаємо вхідний файл
+    string utf8Input = ReadUtf8File(inputFile);
+    wstring wordWide = Utf8ToWide(utf8Input);
 
-    string word;
-    in >> word; // Зчитуємо одне слово з файлу
-
-    // Авторська інформація
-    out << "Розробник: Мироненко Ярослав\n";
-    out << "Університет: ЦНТУ \n";
-    out << "Місто: Кропривницький, Країна: Україна, Рік: 2025\n";
+    // Підготовка результату
+    string result = "Розробник: Мироненко Ярослав\n";
+    result += "Університет: ЦНТУ \n";
+    result += "Місто: Кропривницький, Країна: Україна, Рік: 2025\n";
 
     // Підрахунок приголосних
-    int consonants = countConsonants(word);
-    out << "Кількість приголосних: " << consonants << "\n";
+    int consonants = countConsonants(wordWide);
+    result += "Кількість приголосних: " + to_string(consonants) + "\n";
 
-    // Чи є слово в поезії
-    if (isWordInPoem(word)) {
-        out << "Слово \"" << word << "\" є у вірші Іващенка.\n";
+    // Перевірка наявності у вірші
+    wstring poem = L"Про себе не кажи недобрих слів, "
+                   L"Бо має сказане таємну силу. "
+                   L"Кажи: «Я сильний, впевнений, щасливий!» "
+                   L"І буде саме так, як ти хотів!";
+
+    string wordUtf8 = WideToUtf8(wordWide);
+
+    if (poem.find(wordWide) != wstring::npos) {
+        result += "Слово \"" + wordUtf8 + "\" є у вірші Іващенка.\n";
     } else {
-        out << "Слово \"" << word << "\" відсутнє у вірші Іващенка.\n";
+        result += "Слово \"" + wordUtf8 + "\" відсутнє у вірші Іващенка.\n";
     }
+
+    // Записуємо результат
+    WriteUtf8File(outputFile, result);
 }
 
 // ===== ЗАДАЧА 10.2 =====
 void task_10_2(const string& inputFile, const string& outputFile) {
-    ifstream in(inputFile);
-    ofstream out(outputFile, ios::app);
+    // Читаємо вхідний файл
+    string utf8Input = ReadUtf8File(inputFile);
+    wstring wordWide = Utf8ToWide(utf8Input);
 
-    string word;
-    in >> word;
+    // Підготовка результату
+    string result = "";
 
-    if (!word.empty()) {
-        out << "Перша літера: " << word.front() << "\n";
-        out << "Остання літера: " << word.back() << "\n";
+    if (!wordWide.empty()) {
+        wchar_t first = wordWide.front();
+        wchar_t last = wordWide.back();
+
+        string firstUtf8 = WideToUtf8(wstring(1, first));
+        string lastUtf8 = WideToUtf8(wstring(1, last));
+
+        result += "Перша літера: " + firstUtf8 + "\n";
+        result += "Остання літера: " + lastUtf8 + "\n";
+    } else {
+        result += "Помилка: файл порожній або слово відсутнє!\n";
     }
 
     // Дата і час
     time_t now = time(nullptr);
     char buf[64];
     strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", localtime(&now));
-    out << "Дата і час запису: " << buf << "\n";
+    result += "Дата і час запису: " + string(buf) + "\n";
+
+    // Записуємо результат
+    WriteUtf8File(outputFile, result);
 }
 
 // ===== ЗАДАЧА 10.3 =====
-void task_10_3(double x, double y, double z, int b, const string& outputFile) {
-    ofstream out(outputFile, ios::app);
+void task_10_3(double x, double y, double z, int b, const string& inputFile, const string& outputFile) {
+    // Зберігаємо параметри у вхідний файл
+    string inputContent = "x= " + to_string(x) + " y= " + to_string(y) +
+                          " z= " + to_string(z) + " b= " + to_string(b);
+    WriteUtf8File(inputFile, inputContent);
 
+    // Обчислення результату
     double result = s_calculation(x, y, z);
 
+    // Підготовка результату
+    string outputContent = "";
+
     if (isnan(result)) {
-        out << "Помилка: ділення на нуль у функції s_calculation(" << x << ", " << y << ", " << z << ")\n";
+        outputContent += "Помилка: ділення на нуль у функції s_calculation(" +
+                         to_string(x) + ", " + to_string(y) + ", " + to_string(z) + ")\n";
     } else {
-        out << "Результат s_calculation(" << x << ", " << y << ", " << z << ") = " << result << "\n";
+        outputContent += "Результат s_calculation(" + to_string(x) + ", " +
+                         to_string(y) + ", " + to_string(z) + ") = " + to_string(result) + "\n";
     }
 
-    string binary = toBinary(b); // Перетворюємо число b в двійкову систему
-    out << "Число " << b << " у двійковій формі: " << binary << "\n";
+    // Переведення числа в двійкову систему
+    string binary = toBinary(b);
+    outputContent += "Число " + to_string(b) + " у двійковій формі: " + binary + "\n";
+
+    // Записуємо результат
+    WriteUtf8File(outputFile, outputContent);
 }
 
-
+// Для сумісності зі старим кодом
+wstring to_wstring(const string& str) {
+    return Utf8ToWide(str);
+}

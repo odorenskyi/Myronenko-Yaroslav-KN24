@@ -16,7 +16,7 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
-					<Add directory="../../prj" />
+					<Add directory="../../../lab10/prj/TestDriver/bin" />
 				</Compiler>
 				<Linker>
 					<Add library="bin/Debug/libModulesMyronenko.a" />

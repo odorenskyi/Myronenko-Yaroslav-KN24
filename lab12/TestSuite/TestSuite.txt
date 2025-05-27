@@ -1,0 +1,49 @@
+Test Case ID: TC_SETTER_EDGE_001  
+Action: Встановлення коректного значення довжини грані 1.5 через setEdgeLength()  
+Expected Result: edgeLength = 1.5  
+Test Result:   
+
+Test Case ID: TC_SETTER_EDGE_002  
+Action: Спроба встановити від’ємне значення довжини грані -0.3 через setEdgeLength()  
+Expected Result: Виняток std::invalid_argument з повідомленням "Довжина грані має бути додатним числом"  
+Test Result:   
+
+Test Case ID: TC_SETTER_RIPENESS_001  
+Action: Встановлення коректного значення стиглості 75.0 через setRipeness()  
+Expected Result: ripeness = 75.0  
+Test Result:   
+
+Test Case ID: TC_SETTER_RIPENESS_002  
+Action: Спроба встановити некоректне значення стиглості 150.0 через setRipeness()  
+Expected Result: Виняток std::invalid_argument з повідомленням "Стиглість має бути в діапазоні від 0 до 100"  
+Test Result:   
+
+Test Case ID: TC_VOLUME_001  
+Action: Обчислення об'єму правильної піраміди з edgeLength = 2.0  
+Expected Result: volume ≈ 0.77 (згідно з формулою V = 1/3 * So * h)  
+Test Result:   
+
+Test Case ID: TC_VOLUME_002  
+Action: Обчислення об'єму піраміди з edgeLength = 0.01 (граничне мале значення)  
+Expected Result: Дуже малий об’єм > 0  
+Test Result:   
+
+Test Case ID: TC_ACCESSORS_001  
+Action: Отримання значень усіх атрибутів після встановлення через конструктор  
+Expected Result: Значення відповідають параметрам конструктора  
+Test Result:   
+
+Test Case ID: TC_CHANGE_ALL_001  
+Action: Виклик функції changeAttributes() зі зміною всіх параметрів (1.2, "blue", "orange", 65.0)  
+Expected Result: Всі атрибути оновлено відповідно  
+Test Result:   
+
+Test Case ID: TC_CHANGE_ALL_002  
+Action: Виклик changeAttributes() з некоректною довжиною грані (-2.0)  
+Expected Result: Виняток std::invalid_argument з повідомленням "Довжина грані має бути додатним числом"  
+Test Result:   
+
+Test Case ID: TC_CHANGE_ALL_003  
+Action: Виклик changeAttributes() з некоректною стиглістю (110.0)  
+Expected Result: Виняток std::invalid_argument з повідомленням "Стиглість має бути в діапазоні від 0 до 100"  
+Test Result:  

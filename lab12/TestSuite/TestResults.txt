@@ -1,91 +1,85 @@
-=== Constructors ===
-Test Case ID: TC_CONSTRUCTOR_DEFAULT_001
+Test Case ID: C_CONSTRUCTOR_DEFAULT_001
 Action: new()
 Expected Result: baseArea=1;height=1;material=червона цегла
-Test Result:
+Test Result: PASS
 
-Test Case ID: TC_CONSTRUCTOR_PARAMS_002
+Test Case ID: C_CONSTRUCTOR_PARAMS_002
 Action: new(2.5,4.0,бетон)
 Expected Result: baseArea=2.5;height=4;material=бетон
-Test Result:
+Test Result: PASS
 
-Test Case ID: TC_CONSTRUCTOR_DEFAULT_001
+Test Case ID: C_CONSTRUCTOR_DEFAULT_001
 Action: new()
 Expected Result: baseArea=1;height=1;material=червона цегла
-Test Result:
+Test Result: PASS
 
-Test Case ID: TC_SET_HEIGHT_VALID
+Test Case ID: C_SET_HEIGHT_VALID
 Action: setHeight(2.5)
 Expected Result: height=2.5
-Test Result:
+Test Result: PASS
 
-Test Case ID: TC_SET_ATTRIBUTES_INVALID
+Test Case ID: C_SET_ATTRIBUTES_INVALID
 Action: setAttributes(-1, 2, бетон)
 Expected Result: false
-Test Result:
+Test Result: PASS
 
-
-=== Setters ===
-Test Case ID: TC_SET_BASEAREA_VALID_004
+Test Case ID: C_SET_BASEAREA_VALID_004
 Action: setBaseArea(3.2)
 Expected Result: baseArea=3.2
-Test Result:
+Test Result: PASS
 
-Test Case ID: TC_SET_BASEAREA_INVALID_005
+Test Case ID: C_SET_BASEAREA_INVALID_005
 Action: setBaseArea(-2.0)
 Expected Result: baseArea=1
-Test Result:
+Test Result: PASS
 
-Test Case ID: TC_SET_HEIGHT_VALID_006
+Test Case ID: C_SET_HEIGHT_VALID_006
 Action: setHeight(6.1)
 Expected Result: height=6.1
-Test Result:
+Test Result: PASS
 
-Test Case ID: TC_SET_HEIGHT_INVALID_007
+Test Case ID: C_SET_HEIGHT_INVALID_007
 Action: setHeight(0)
 Expected Result: height=1
-Test Result:
+Test Result: PASS
 
-Test Case ID: TC_SET_MATERIAL_VALID_008
+Test Case ID: C_SET_MATERIAL_VALID_008
 Action: setMaterial(граніт)
 Expected Result: material=граніт
-Test Result:
+Test Result: PASS
 
-Test Case ID: TC_SET_MATERIAL_INVALID_009
+Test Case ID: C_SET_MATERIAL_INVALID_009
 Action: setMaterial()
 Expected Result: material=червона цегла
-Test Result:
+Test Result: PASS
 
-Test Case ID: TC_SET_ATTRIBUTES_VALID_010
+Test Case ID: C_SET_ATTRIBUTES_VALID_010
 Action: setAttributes(4.0,5.0,глина)
 Expected Result: baseArea=4;height=5;material=глина
-Test Result:
+Test Result: PASS
 
-Test Case ID: TC_SET_ATTRIBUTES_INVALID_011
+Test Case ID: C_SET_ATTRIBUTES_INVALID_011
 Action: setAttributes(-4.0,5.0,глина)
 Expected Result: false
-Test Result:
+Test Result: PASS
 
-
-=== Getters ===
-Test Case ID: TC_GET_BASEAREA_012
+Test Case ID: C_GET_BASEAREA_012
 Action: getBaseArea()
 Expected Result: baseArea=1
-Test Result:
+Test Result: PASS
 
-Test Case ID: TC_GET_HEIGHT_013
+Test Case ID: C_GET_HEIGHT_013
 Action: getHeight()
 Expected Result: height=1
-Test Result:
+Test Result: PASS
 
-Test Case ID: TC_GET_MATERIAL_014
+Test Case ID: C_GET_MATERIAL_014
 Action: getMaterial()
 Expected Result: material=червона цегла
-Test Result:
+Test Result: PASS
 
-
-=== Calculations ===
-Test Case ID: TC_CALCULATE_VOLUME_015
+Test Case ID: C_CALCULATE_VOLUME_015
 Action: calculateVolume()
 Expected Result: volume=0.333333
-Test Result:
+Test Result: PASS
+
